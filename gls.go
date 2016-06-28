@@ -55,11 +55,11 @@ func (self *Context) Put(k string, v interface{}) {
 	self.lock.Unlock()
 }
 
-func (self *Context) Get(k string) interface{} {
+func (self *Context) Get(k string) (ret interface{}, ok bool) {
 	self.lock.Lock()
-	ret := self.values[k]
+	ret, ok  = self.values[k]
 	self.lock.Unlock()
-	return ret
+	return
 }
 
 func GetContext() *Context {
@@ -79,3 +79,4 @@ func Go(f func()) {
 	})
 
 }
+

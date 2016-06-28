@@ -11,7 +11,8 @@ func test1() bool {
 	if ctx.Id() != 1 {
 		return false
 	}
-	if ctx.Get("hello").(string) != "world" {
+	v, ok := ctx.Get("hello")
+	if !ok || v.(string) != "world" {
 		return false
 	}
 	return true
@@ -39,8 +40,9 @@ func TestGoroutineId(t *testing.T) {
 			if ctx.Id() != 1 {
 				t.Fatal("ctx id wrong")
 			}
-			if ctx.Get("hello").(string) != "world" {
-				t.Fatal("ctx value wrong")
+			v, ok := ctx.Get("hello")
+			if !ok || v.(string) != "world" {
+				t.Errorf("context failed")
 			}
 			wg.Done()
 		})
@@ -72,3 +74,4 @@ func TestStart(t *testing.T) {
 		}
 	})
 }
+
