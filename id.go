@@ -11,6 +11,7 @@ var idPool = IdPool{ maxId: 1 }
 
 func (self *IdPool) get() uint32 {
 	self.lock.Lock()
+	defer self.lock.Unlock()
 	var ret uint32
 	size := len(self.released)
 	if size > 0 {
@@ -21,7 +22,6 @@ func (self *IdPool) get() uint32 {
 		ret = self.maxId
 		self.maxId++
 	}
-	self.lock.Unlock()
 	return ret
 }
 
