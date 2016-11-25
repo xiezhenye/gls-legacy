@@ -55,11 +55,45 @@ func (self *Context) Put(k string, v interface{}) {
 	self.lock.Unlock()
 }
 
-func (self *Context) Get(k string) interface{} {
+func (self *Context) Get(k string) (ret interface{}, ok bool) {
 	self.lock.Lock()
-	ret := self.values[k]
+	ret, ok  = self.values[k]
 	self.lock.Unlock()
+	return
+}
+
+func (self *Context) GetWithDefault(k string, dft interface{}) interface{} {
+	self.lock.Lock()
+	ret, ok  := self.values[k]
+	self.lock.Unlock()
+	if !ok {
+		ret = dft
+	}
 	return ret
+}
+
+
+func Put(k string, v interface{}) {
+	ctx := GetContext()
+	if ctx == nil {
+		return
+	}
+	ctx.Put(k, v)
+}
+func Get(k string) (ret interface{}, ok bool) {
+	ctx := GetContext()
+	if ctx == nil {
+		return nil, false
+	}
+	return ctx.Get(k)
+}
+
+func GetWithDefault(k string, dft interface{}) interface{} {
+	ctx := GetContext()
+	if ctx == nil {
+		return dft
+	}
+	return ctx.GetWithDefault(k, dft)
 }
 
 func GetContext() *Context {
