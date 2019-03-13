@@ -296,7 +296,11 @@ func getContextId() uint32 {
 		if ! ok {
 			break
 		}
-		fpc := runtime.FuncForPC(pc).Entry()
+		pcFunc := runtime.FuncForPC(pc)
+		if pcFunc == nil {
+			continue
+		}
+		fpc := pcFunc.Entry()
 		n, ok := pcToN[fpc]
 		if ok {
 			ret <<= 8
